@@ -1,13 +1,13 @@
-interface Color {
-	red: number;
-	green: number;
-	blue: number;
-}
+// to prevent user from importing from common/src/**/*
+export * from "./errors/bad-request-error";
+export * from "./errors/custom-error";
+export * from "./errors/db-connection-error";
+export * from "./errors/not-authorized-error";
+export * from "./errors/not-found-error";
+export * from "./errors/req-validation-error";
 
-export const color: Color = {
-	red: 20,
-	green: 0,
-	blue: 0,
-};
+export * from "./middlewares/current-user";
+export * from "./middlewares/error-handler";
+export * from "./middlewares/require-auth";
+export * from "./middlewares/validate-request";
 
-console.log(color);
