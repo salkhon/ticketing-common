@@ -1,21 +1,22 @@
 {
-  "name": "@salkon-ticketing/common",
-  "version": "1.0.1",
-  "description": "",
-  "main": "index.js",
-  "types": "./build/index.d.ts",
-  "files": [
-    "build/**/*"
-  ],
-  "scripts": {
-    "clean": "del ./build/*",
-    "build": "npm run clean && tsc"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "del-cli": "^5.1.0",
-    "typescript": "^5.3.3"
-  }
+	"name": "@salkon-ticketing/common",
+	"version": "1.0.1",
+	"description": "",
+	"main": "index.js",
+	"types": "./build/index.d.ts",
+	"files": [
+		"build/**/*"
+	],
+	"scripts": {
+		"clean": "del ./build/*",
+		"build": "npm run clean && tsc",
+		"pub": "git add -A && git commit -m \"Updates\" && npm version patch && npm run build && npm publish --access public"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"del-cli": "^5.1.0",
+		"typescript": "^5.3.3"
+	}
 }
