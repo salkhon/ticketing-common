@@ -12,6 +12,7 @@ export function errorHandler(
 		return res.status(err.status).send({ errors: err.serializeErrors() });
 	}
 
+	console.error(err);
 	res.status(400).send({
 		errors: [{ message: err.message }],
 	});
