@@ -50,6 +50,9 @@ export abstract class Listener<T extends Event> {
 		}
 	}
 
+  /**
+   * Parse the jetstream message data
+   */
 	parseMessage(msg: JsMsg): string {
 		const data = msg.data;
 		return JSON.parse(typeof data === "string" ? data : data.toString());
