@@ -18,8 +18,12 @@ export abstract class Publisher<T extends Event> {
 		this.client = client;
 	}
 
-	async publish(data: T["data"]) {
-		// avoiding await in constructor
+	/**
+	 * Registers the stream for the publisher if it does not exist
+	 *
+	 * @returns void
+	 */
+	async registerStream() {
 		if (!this.jsm || !this.js) {
 			this.jsm = await this.client.jetstreamManager();
 			// await jsm.streams.delete(streamName); // delete previous stream
@@ -29,6 +33,16 @@ export abstract class Publisher<T extends Event> {
 			});
 			this.js = this.client.jetstream();
 		}
+	}
+
+	/**
+	 * Publishes the data to the subject
+	 *
+	 * @param data
+	 * @returns void
+	 */
+	async publish(data: T["data"]) {
+		await this.registerStream();
 
 		const pa = await this.js.publish(this.subject, JSON.stringify(data));
 		console.log(

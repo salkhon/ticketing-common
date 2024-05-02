@@ -20,6 +20,11 @@ export abstract class Listener<T extends Event> {
 
 	abstract onMessage(data: T["data"], message: JsMsg): void;
 
+  /**
+   * Listen for messages on the subject indefinitely
+   * 
+   * @returns void
+   */
 	async listen() {
 		const jsm = await this.client.jetstreamManager();
 		const js = this.client.jetstream();
