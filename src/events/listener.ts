@@ -7,27 +7,27 @@ interface Event {
 }
 
 export abstract class Listener<T extends Event> {
-	private client: NatsConnection;
+	private nc: NatsConnection;
 	protected streamName = "EVENTS";
 	abstract subject: T["subject"];
 	abstract durableName: string;
 	protected ackWait = 5 * 1000; // 5 seconds
 	protected ackPolicy = AckPolicy.Explicit;
 
-	constructor(client: NatsConnection) {
-		this.client = client;
+	constructor(nc: NatsConnection) {
+		this.nc = nc;
 	}
 
 	abstract onMessage(data: T["data"], message: JsMsg): void;
 
-  /**
-   * Listen for messages on the subject indefinitely
-   * 
-   * @returns void
-   */
+	/**
+	 * Listen for messages on the subject indefinitely
+	 *
+	 * @returns void
+	 */
 	async listen() {
-		const jsm = await this.client.jetstreamManager();
-		const js = this.client.jetstream();
+		const jsm = await this.nc.jetstreamManager();
+		const js = this.nc.jetstream();
 
 		await jsm.consumers.add(this.streamName, {
 			durable_name: this.durableName, // consumer name (name NATS uses to identify the consumer) (queue group)
@@ -50,9 +50,9 @@ export abstract class Listener<T extends Event> {
 		}
 	}
 
-  /**
-   * Parse the jetstream message data
-   */
+	/**
+	 * Parse the jetstream message data
+	 */
 	parseMessage(msg: JsMsg): string {
 		const data = msg.data;
 		return JSON.parse(typeof data === "string" ? data : data.toString());

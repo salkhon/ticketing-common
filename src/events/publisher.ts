@@ -9,30 +9,15 @@ interface Event {
 export abstract class Publisher<T extends Event> {
 	private streamName = "EVENTS";
 	abstract subject: T["subject"];
-	private client: NatsConnection;
+	private connection: NatsConnection;
 
-	private jsm: JetStreamManager;
-	private js: JetStreamClient;
-
-	constructor(client: NatsConnection) {
-		this.client = client;
-	}
-
-	/**
-	 * Registers the stream for the publisher if it does not exist
-	 *
-	 * @returns void
-	 */
-	async registerStream() {
-		if (!this.jsm || !this.js) {
-			this.jsm = await this.client.jetstreamManager();
-			// await jsm.streams.delete(streamName); // delete previous stream
-			await this.jsm.streams.add({
-				name: this.streamName,
-				subjects: [this.subject],
-			});
-			this.js = this.client.jetstream();
-		}
+  /**
+   * Creates an instance of the Publisher
+   *
+   * @param connection - NATS connection with JetStreamManager pre-configured
+   */
+	constructor(connection: NatsConnection) {
+		this.connection = connection;
 	}
 
 	/**
@@ -42,9 +27,8 @@ export abstract class Publisher<T extends Event> {
 	 * @returns void
 	 */
 	async publish(data: T["data"]) {
-		await this.registerStream();
-
-		const pa = await this.js.publish(this.subject, JSON.stringify(data));
+    const js = this.connection.jetstream();
+		const pa = await js.publish(this.subject, JSON.stringify(data));
 		console.log(
 			`PUBLISHED: [${this.streamName}.${this.subject}#${
 				pa.seq
