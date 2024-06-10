@@ -37,15 +37,27 @@ export abstract class Listener<T extends Event> {
 		const c = await js.consumers.get(this.streamName, this.durableName);
 
 		while (true) {
-			console.log("waiting for messages");
+			console.log(
+				`CONSUMER ${this.streamName}.${this.durableName} is waiting for messages...`
+			);
 			const messages = await c.consume();
 			try {
 				for await (const m of messages) {
+					console.log(
+						`CONSUMER ${this.streamName}.${this.durableName} received a message: ${m.sid}`
+					);
+
 					this.onMessage(JSON.parse(m.data.toString()), m);
 					m.ack();
+
+					console.log(
+						`CONSUMER ${this.streamName}.${this.durableName} acknowledged the message: ${m.sid}`
+					);
 				}
 			} catch (err) {
-				console.error(`consume failed: ${err}`);
+				console.error(
+					`CONSUMER ${this.streamName}.${this.durableName} error: ${err}`
+				);
 			}
 		}
 	}
